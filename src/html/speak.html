@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>朗读助手</title>
+    <link rel="stylesheet" href="../css/content.css">
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+<div class="head fx">
+    <div class="logo"><i class="dmx-icon dmx-icon-logo"></i>梦想划词翻译</div>
+    <ul class="nav">
+        <li><a href="favorite.html">我的收藏</a></li>
+        <li><a href="history.html">历史记录</a></li>
+        <li><a href="speak.html" class="active">朗读助手</a></li>
+    </ul>
+</div>
+
+<div class="speak_body">
+    <div id="speak_input" contenteditable="true"></div>
+    <div class="speak_box fx">
+        <select id="speak_voice">
+            <option value="">朗读名称</option>
+        </select>
+        <select id="speak_rate">
+            <option value="">朗读速度</option>
+            <option value="0.5">0.5X</option>
+            <option value="0.75">0.75X</option>
+            <option value="1">1X</option>
+            <option value="1.25">1.25X</option>
+            <option value="1.5">1.5X</option>
+            <option value="1.75">1.75X</option>
+            <option value="2">2X</option>
+            <option value="2.5">2.5X</option>
+            <option value="3">3X</option>
+        </select>
+        <select id="speak_pitch">
+            <option value="">朗读音调</option>
+            <option value="0.5">0.5</option>
+            <option value="0.75">0.75</option>
+            <option value="1">1</option>
+            <option value="1.25">1.25</option>
+            <option value="1.5">1.5</option>
+            <option value="1.75">1.75</option>
+            <option value="2">2</option>
+        </select>
+        <div id="speak_button" class="dmx_button mt_1">朗读</div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../js/common.js"></script>
+<script type="text/javascript" src="../js/speak.js"></script>
+</html>

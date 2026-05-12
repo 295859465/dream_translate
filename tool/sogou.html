@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        table {
+            box-sizing: border-box;
+            border-color: grey;
+            font-size: 14px;
+        }
+
+        table tr td {
+            min-width: 120px;
+        }
+    </style>
+</head>
+<body>
+<script src="bd.js"></script>
+<script>
+    // sogou language
+    let sogouList = {
+        "auto": {
+            "lang": "auto",
+            "text": "自动检测",
+            "play": !1
+        },
+        "fromCY": [{
+            "lang": "zh-CHS",
+            "text": "中文",
+            "play": !0
+        }, {
+            "lang": "en",
+            "text": "英语",
+            "play": !0
+        }, {
+            "lang": "ja",
+            "text": "日语",
+            "play": !0
+        }, {
+            "lang": "ko",
+            "text": "韩语",
+            "play": !0
+        }],
+        "toCY": [{
+            "lang": "zh-CHS",
+            "text": "中文",
+            "play": !0
+        }, {
+            "lang": "en",
+            "text": "英语",
+            "play": !0
+        }, {
+            "lang": "ja",
+            "text": "日语",
+            "play": !0
+        }, {
+            "lang": "ko",
+            "text": "韩语",
+            "play": !0
+        }],
+        "LI": {
+            "A": [{
+                "lang": "ar",
+                "text": "阿拉伯语",
+                "play": !0,
+                "dir": "rtl"
+            }, {
+                "lang": "et",
+                "text": "爱沙尼亚语",
+                "play": !1
+            }],
+            "B": [{
+                "lang": "bg",
+                "text": "保加利亚语",
+                "play": !0
+            }, {
+                "lang": "pl",
+                "text": "波兰语",
+                "play": !0
+            }, {
+                "lang": "bs-Latn",
+                "text": "波斯尼亚语",
+                "play": !1
+            }, {
+                "lang": "fa",
+                "text": "波斯语",
+                "play": !1,
+                "dir": "rtl"
+            }, {
+                "lang": "mww",
+                "text": "白苗文",
+                "play": !1
+            }],
+            "D": [{
+                "lang": "da",
+                "text": "丹麦语",
+                "play": !0
+            }, {
+                "lang": "de",
+                "text": "德语",
+                "play": !0
+            }],
+            "E": [{
+                "lang": "ru",
+                "text": "俄语",
+                "play": !0
+            }],
+            "F": [{
+                "lang": "fr",
+                "text": "法语",
+                "play": !0
+            }, {
+                "lang": "fi",
+                "text": "芬兰语",
+                "play": !0
+            }, {
+                "lang": "fj",
+                "text": "斐济语",
+                "play": !1
+            }, {
+                "lang": "fil",
+                "text": "菲律宾语",
+                "play": !1
+            }],
+            "H": [{
+                "lang": "ht",
+                "text": "海地克里奥尔语",
+                "play": !1
+            }, {
+                "lang": "ko",
+                "text": "韩语",
+                "play": !0
+            }, {
+                "lang": "nl",
+                "text": "荷兰语",
+                "play": !0
+            }],
+            "J": [{
+                "lang": "ca",
+                "text": "加泰隆语",
+                "play": !0
+            }, {
+                "lang": "cs",
+                "text": "捷克语",
+                "play": !0
+            }],
+            "K": [{
+                "lang": "tlh",
+                "text": "克林贡语",
+                "play": !1
+            }, {
+                "lang": "tlh-Qaak",
+                "text": "克林贡语(piqaD)",
+                "play": !1,
+                "font": "piqad"
+            }, {
+                "lang": "hr",
+                "text": "克罗地亚语",
+                "play": !0
+            }, {
+                "lang": "otq",
+                "text": "克雷塔罗奥托米语",
+                "play": !1
+            }],
+            "L": [{
+                "lang": "ro",
+                "text": "罗马尼亚语",
+                "play": !0
+            }, {
+                "lang": "lv",
+                "text": "拉脱维亚语",
+                "play": !1
+            }, {
+                "lang": "lt",
+                "text": "立陶宛语",
+                "play": !1
+            }],
+            "M": [{
+                "lang": "ms",
+                "text": "马来语",
+                "play": !0
+            }, {
+                "lang": "mt",
+                "text": "马耳他语",
+                "play": !1
+            }, {
+                "lang": "mg",
+                "text": "马尔加什语",
+                "play": !1
+            }, {
+                "lang": "bn",
+                "text": "孟加拉语",
+                "play": !1
+            }],
+            "N": [{
+                "lang": "af",
+                "text": "南非荷兰语",
+                "play": !1
+            }, {
+                "lang": "no",
+                "text": "挪威语",
+                "play": !0
+            }],
+            "P": [{
+                "lang": "pt",
+                "text": "葡萄牙语",
+                "play": !0
+            }],
+            "R": [{
+                "lang": "ja",
+                "text": "日语",
+                "play": !0
+            }, {
+                "lang": "sv",
+                "text": "瑞典语",
+                "play": !0
+            }],
+            "S": [{
+                "lang": "sl",
+                "text": "斯洛文尼亚语",
+                "play": !0
+            }, {
+                "lang": "sr-Latn",
+                "text": "塞尔维亚语(拉丁文)",
+                "play": !1
+            }, {
+                "lang": "sr-Cyrl",
+                "text": "塞尔维亚语(西里尔文)",
+                "play": !1
+            }, {
+                "lang": "sk",
+                "text": "斯洛伐克语",
+                "play": !0
+            }, {
+                "lang": "sw",
+                "text": "斯瓦希里语",
+                "play": !1
+            }, {
+                "lang": "sm",
+                "text": "萨摩亚语",
+                "play": !1
+            }],
+            "T": [{
+                "lang": "th",
+                "text": "泰语",
+                "play": !0
+            }, {
+                "lang": "tr",
+                "text": "土耳其语",
+                "play": !1
+            }, {
+                "lang": "to",
+                "text": "汤加语",
+                "play": !1
+            }, {
+                "lang": "ty",
+                "text": "塔希提语",
+                "play": !1
+            }],
+            "U": [{
+                "lang": "yua",
+                "text": "尤卡坦玛雅语",
+                "play": !1
+            }],
+            "V": [{
+                "lang": "cy",
+                "text": "威尔士语",
+                "play": !1
+            }],
+            "W": [{
+                "lang": "uk",
+                "text": "乌克兰语",
+                "play": !1
+            }, {
+                "lang": "ur",
+                "text": "乌尔都语",
+                "play": !1,
+                "dir": "rtl"
+            }],
+            "X": [{
+                "lang": "es",
+                "text": "西班牙语",
+                "play": !0
+            }, {
+                "lang": "el",
+                "text": "希腊语",
+                "play": !0
+            }, {
+                "lang": "hu",
+                "text": "匈牙利语",
+                "play": !0
+            }, {
+                "lang": "he",
+                "text": "希伯来语",
+                "play": !0,
+                "dir": "rtl"
+            }],
+            "Y": [{
+                "lang": "en",
+                "text": "英语",
+                "play": !0
+            }, {
+                "lang": "it",
+                "text": "意大利语",
+                "play": !0
+            }, {
+                "lang": "hi",
+                "text": "印地语",
+                "play": !0
+            }, {
+                "lang": "id",
+                "text": "印度尼西亚语",
+                "play": !0
+            }, {
+                "lang": "vi",
+                "text": "越南语",
+                "play": !0
+            }, {
+                "lang": "yue",
+                "text": "粤语(繁体)",
+                "play": !0
+            }],
+            "Z": [{
+                "lang": "zh-CHS",
+                "text": "中文",
+                "play": !0
+            }, {
+                "lang": "zh-CHT",
+                "text": "中文繁体",
+                "play": !0
+            }]
+        },
+        "ALL": [{
+            "lang": "ar",
+            "text": "阿拉伯语",
+            "play": !0
+        }, {
+            "lang": "et",
+            "text": "爱沙尼亚语",
+            "play": !1
+        }, {
+            "lang": "bg",
+            "text": "保加利亚语",
+            "play": !0
+        }, {
+            "lang": "pl",
+            "text": "波兰语",
+            "play": !0
+        }, {
+            "lang": "bs-Latn",
+            "text": "波斯尼亚语",
+            "play": !1
+        }, {
+            "lang": "fa",
+            "text": "波斯语",
+            "play": !1
+        }, {
+            "lang": "mww",
+            "text": "白苗文",
+            "play": !1
+        }, {
+            "lang": "da",
+            "text": "丹麦语",
+            "play": !0
+        }, {
+            "lang": "de",
+            "text": "德语",
+            "play": !0
+        }, {
+            "lang": "ru",
+            "text": "俄语",
+            "play": !0
+        }, {
+            "lang": "fr",
+            "text": "法语",
+            "play": !0
+        }, {
+            "lang": "fi",
+            "text": "芬兰语",
+            "play": !0
+        }, {
+            "lang": "fj",
+            "text": "斐济语",
+            "play": !1
+        }, {
+            "lang": "fil",
+            "text": "菲律宾语",
+            "play": !1
+        }, {
+            "lang": "ko",
+            "text": "韩语",
+            "play": !0
+        }, {
+            "lang": "ht",
+            "text": "海地克里奥尔语",
+            "play": !1
+        }, {
+            "lang": "nl",
+            "text": "荷兰语",
+            "play": !0
+        }, {
+            "lang": "ca",
+            "text": "加泰隆语",
+            "play": !0
+        }, {
+            "lang": "cs",
+            "text": "捷克语",
+            "play": !0
+        }, {
+            "lang": "tlh",
+            "text": "克林贡语",
+            "play": !1
+        }, {
+            "lang": "tlh-Qaak",
+            "text": "克林贡语(piqaD)",
+            "play": !1,
+            "font": "piqad"
+        }, {
+            "lang": "hr",
+            "text": "克罗地亚语",
+            "play": !0
+        }, {
+            "lang": "otq",
+            "text": "克雷塔罗奥托米语",
+            "play": !1
+        }, {
+            "lang": "ro",
+            "text": "罗马尼亚语",
+            "play": !0
+        }, {
+            "lang": "lv",
+            "text": "拉脱维亚语",
+            "play": !1
+        }, {
+            "lang": "lt",
+            "text": "立陶宛语",
+            "play": !1
+        }, {
+            "lang": "ms",
+            "text": "马来语",
+            "play": !0
+        }, {
+            "lang": "mt",
+            "text": "马耳他语",
+            "play": !1
+        }, {
+            "lang": "mg",
+            "text": "马尔加什语",
+            "play": !1
+        }, {
+            "lang": "bn",
+            "text": "孟加拉语",
+            "play": !1
+        }, {
+            "lang": "af",
+            "text": "南非荷兰语",
+            "play": !1
+        }, {
+            "lang": "no",
+            "text": "挪威语",
+            "play": !0
+        }, {
+            "lang": "pt",
+            "text": "葡萄牙语",
+            "play": !0
+        }, {
+            "lang": "ja",
+            "text": "日语",
+            "play": !0
+        }, {
+            "lang": "sv",
+            "text": "瑞典语",
+            "play": !0
+        }, {
+            "lang": "sl",
+            "text": "斯洛文尼亚语",
+            "play": !0
+        }, {
+            "lang": "sr-Latn",
+            "text": "塞尔维亚语(拉丁文)",
+            "play": !1
+        }, {
+            "lang": "sr-Cyrl",
+            "text": "塞尔维亚语(西里尔文)",
+            "play": !1
+        }, {
+            "lang": "sk",
+            "text": "斯洛伐克语",
+            "play": !0
+        }, {
+            "lang": "sw",
+            "text": "斯瓦希里语",
+            "play": !1
+        }, {
+            "lang": "sm",
+            "text": "萨摩亚语",
+            "play": !1
+        }, {
+            "lang": "th",
+            "text": "泰语",
+            "play": !0
+        }, {
+            "lang": "tr",
+            "text": "土耳其语",
+            "play": !1
+        }, {
+            "lang": "to",
+            "text": "汤加语",
+            "play": !1
+        }, {
+            "lang": "ty",
+            "text": "塔希提语",
+            "play": !1
+        }, {
+            "lang": "yua",
+            "text": "尤卡坦玛雅语",
+            "play": !1
+        }, {
+            "lang": "cy",
+            "text": "威尔士语",
+            "play": !1
+        }, {
+            "lang": "uk",
+            "text": "乌克兰语",
+            "play": !1
+        }, {
+            "lang": "ur",
+            "text": "乌尔都语",
+            "play": !1
+        }, {
+            "lang": "es",
+            "text": "西班牙语",
+            "play": !0
+        }, {
+            "lang": "el",
+            "text": "希腊语",
+            "play": !0
+        }, {
+            "lang": "hu",
+            "text": "匈牙利语",
+            "play": !0
+        }, {
+            "lang": "he",
+            "text": "希伯来语",
+            "play": !0
+        }, {
+            "lang": "en",
+            "text": "英语",
+            "play": !0
+        }, {
+            "lang": "it",
+            "text": "意大利语",
+            "play": !0
+        }, {
+            "lang": "hi",
+            "text": "印地语",
+            "play": !0
+        }, {
+            "lang": "id",
+            "text": "印度尼西亚语",
+            "play": !0
+        }, {
+            "lang": "vi",
+            "text": "越南语",
+            "play": !0
+        }, {
+            "lang": "yue",
+            "text": "粤语(繁体)",
+            "play": !0
+        }, {
+            "lang": "zh-CHS",
+            "text": "中文",
+            "play": !0
+        }, {
+            "lang": "zh-CHT",
+            "text": "中文繁体",
+            "play": !0
+        }],
+        "Doc": {
+            "lang": [{
+                "type": "direction",
+                "text": "全部语言",
+                "value": "",
+                "uigs": "direction_all"
+            }, {
+                "type": "direction",
+                "text": "中 → 英",
+                "value": "zh2en",
+                "uigs": "direction_zh2en"
+            }, {
+                "type": "direction",
+                "text": "英 → 中",
+                "value": "en2zh",
+                "uigs": "direction_en2zh"
+            }, {
+                "type": "direction",
+                "text": "中 → 韩",
+                "value": "zh2ko",
+                "uigs": "direction_zh2en"
+            }, {
+                "type": "direction",
+                "text": "韩 → 中",
+                "value": "ko2zh",
+                "uigs": "direction_en2zh"
+            }, {
+                "type": "direction",
+                "text": "中 → 日",
+                "value": "zh2ja",
+                "uigs": "direction_zh2en"
+            }, {
+                "type": "direction",
+                "text": "日 → 中",
+                "value": "ja2zh",
+                "uigs": "direction_en2zh"
+            }],
+            "uploadTime": [{
+                "type": "uploadTime",
+                "text": "时间升序",
+                "value": "asc",
+                "uigs": "uploadTime_asc"
+            }, {
+                "type": "uploadTime",
+                "text": "时间降序",
+                "value": "desc",
+                "uigs": "uploadTime_desc"
+            }]
+        }
+    }
+    // console.log(sogouList)
+    console.log(sogouList.ALL)
+
+    /*console.log(sogouList.LI)
+    let n = 0
+    for (let [k, v] of Object.entries(sogouList.LI)) {
+        console.log(k, v)
+        n += v.length
+    }
+    console.log('N:', n)*/
+
+    // baidu language list
+    let bdToObj = function (name) {
+        let i = 0
+        let o = {}
+        for (let k in bdList) {
+            i++
+            let n = bdList[k][name]
+            if (n) o[n] = k
+        }
+        console.log(JSON.stringify(o))
+        console.log(i)
+        return o
+    }
+    let bdObj = bdToObj('zhName')
+
+    // soList
+    let soList = {}
+    sogouList.ALL.forEach(v => {
+        soList[v.lang] = v.text
+    })
+
+    let err = 0
+    let a1 = [], a2 = [], ae = []
+    for (let k in soList) {
+        let v = soList[k]
+        if (bdList[k]) {
+            // key 一样的情况
+            a1.push({key: k, sogouName: v, bdName: bdList[k].zhName})
+        } else if (bdObj[v]) {
+            // 中文名 一样的情况
+            a2.push({bdKey: bdObj[v], sogouKey: k, name: v})
+        } else {
+            // 都没有的情况
+            err++
+            ae.push({key: k, name: v})
+        }
+    }
+    // console.log(JSON.stringify(a3))
+    console.log('err:', err)
+
+    let obj = {} // 最终的对应表
+    // key 一致的数据
+    document.write(`<table style="color:green">`)
+    a1.forEach((v, k) => {
+        obj[v.key] = v.key
+        document.write(`<tr><td>${k + 1}</td><td>${v.key}</td><td>${v.key}</td><td>${v.sogouName}</td><td>${v.bdName}</td></tr>`)
+    })
+    document.write(`</table>`)
+
+    // name 一致的数据
+    document.write(`<table>`)
+    a2.forEach((v, k) => {
+        obj[v.bdKey] = v.sogouKey
+        document.write(`<tr><td>${k + 1}</td><td>${v.bdKey}</td><td>${v.sogouKey}</td><td>${v.name}</td></tr>`)
+    })
+    document.write(`</table>`)
+
+    // 都没有的情况
+    document.write(`<table style="color:red">`)
+    ae.forEach((v, k) => {
+        obj[v.key] = v.key
+        document.write(`<tr><td>${k + 1}</td><td>${v.key}</td><td>${v.key}</td><td>${v.name}</td></tr>`)
+    })
+    document.write(`</table>`)
+
+    // document.write(`<hr>`)
+    console.log(JSON.stringify(obj))
+</script>
+</body>
+</html>

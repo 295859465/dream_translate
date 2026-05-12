@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        table {
+            box-sizing: border-box;
+            border-color: grey;
+            font-size: 14px;
+        }
+
+        table tr td {
+            min-width: 120px;
+        }
+    </style>
+</head>
+<body>
+<script src="bd.js"></script>
+<script>
+    // youdao language
+    let ydList = {
+        "中文": "zh-CHS",
+        "英语": "en",
+        "韩语": "ko",
+        "日语": "ja",
+        "法语": "fr",
+        "俄语": "ru",
+        "西班牙语": "es",
+        "葡萄牙语": "pt",
+        "印地语": "hi",
+        "阿拉伯语": "ar",
+        "丹麦语": "da",
+        "德语": "de",
+        "希腊语": "el",
+        "芬兰语": "fi",
+        "意大利语": "it",
+        "马来语": "ms",
+        "越南语": "vi",
+        "印尼语": "id",
+        "荷兰语": "nl"
+    }
+    let ydObj = {}
+    for (const [key, value] of Object.entries(ydList)) {
+        // console.log(`${key}: ${value}`);
+        ydObj[value] = key
+    }
+    console.log(ydObj)
+
+    // baidu language list
+    let bdToObj = function (name) {
+        let i = 0
+        let o = {}
+        for (let k in bdList) {
+            i++
+            let n = bdList[k][name]
+            if (n) o[n] = k
+        }
+        console.log(JSON.stringify(o))
+        console.log(i)
+        return o
+    }
+    let bdObj = bdToObj('zhName')
+
+    let err = 0
+    let a1 = [], a2 = [], ae = []
+    for (const [k, v] of Object.entries(ydObj)) {
+        // console.log(k, v)
+        if (bdList[k]) {
+            // key 一样的情况
+            a1.push({key: k, ydName: v, bdName: bdList[k].zhName})
+        } else if (bdObj[v]) {
+            // 中文名 一样的情况
+            a2.push({bdKey: bdObj[v], ydKey: k, name: v})
+        } else {
+            // 都没有的情况
+            err++
+            ae.push({key: k, name: v})
+        }
+    }
+    // console.log(JSON.stringify(a3))
+    console.log('err:', err)
+
+    let obj = {} // 最终的对应表
+    // key 一致的数据
+    document.write(`<table style="color:green">`)
+    a1.forEach((v, k) => {
+        obj[v.key] = v.key
+        document.write(`<tr><td>${k + 1}</td><td>${v.key}</td><td>${v.key}</td><td>${v.ydName}</td><td>${v.bdName}</td></tr>`)
+    })
+    document.write(`</table>`)
+
+    // name 一致的数据
+    document.write(`<table>`)
+    a2.forEach((v, k) => {
+        obj[v.bdKey] = v.ydKey
+        document.write(`<tr><td>${k + 1}</td><td>${v.bdKey}</td><td>${v.ydKey}</td><td>${v.name}</td></tr>`)
+    })
+    document.write(`</table>`)
+
+    // 都没有的情况
+    document.write(`<table style="color:red">`)
+    ae.forEach((v, k) => {
+        obj[v.key] = v.key
+        document.write(`<tr><td>${k + 1}</td><td>${v.key}</td><td>${v.key}</td><td>${v.name}</td></tr>`)
+    })
+    document.write(`</table>`)
+
+    // document.write(`<hr>`)
+    console.log(JSON.stringify(obj))
+</script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        table {
+            box-sizing: border-box;
+            border-color: grey;
+            font-size: 14px;
+        }
+
+        table tr td {
+            min-width: 120px;
+        }
+    </style>
+</head>
+<body>
+<ul class="source-list" style="display: none;">
+    <li><a href="javascript:;" data-lang="en">英语</a></li>
+    <li><a href="javascript:;" data-lang="zh">中文</a></li>
+    <li><a href="javascript:;" data-lang="ru" data-spm-anchor-id="a271w.8016606.0.0">俄罗斯语</a></li>
+    <li><a href="javascript:;" data-lang="es">西班牙语</a></li>
+    <li><a href="javascript:;" data-lang="fr">法语</a></li>
+    <li><a href="javascript:;" data-lang="ar">阿拉伯语</a></li>
+    <li><a href="javascript:;" data-lang="tr">土耳其语</a></li>
+    <li><a href="javascript:;" data-lang="pt">葡萄牙语</a></li>
+    <li><a href="javascript:;" data-lang="th">泰语</a></li>
+    <li><a href="javascript:;" data-lang="id">印尼语</a></li>
+    <li><a href="javascript:;" data-lang="it">意大利语</a></li>
+    <li><a href="javascript:;" data-lang="vi">越南语</a></li>
+</ul>
+<script src="bd.js"></script>
+<script>
+    // alibaba language
+    let aliObj = {}
+    document.querySelectorAll('[data-lang]').forEach(el => {
+        let lang = el.getAttribute('data-lang')
+        let text = el.innerText
+        // console.log(lang, text)
+        aliObj[lang] = text
+    })
+    console.log(aliObj)
+
+    // baidu language list
+    let bdToObj = function (name) {
+        let i = 0
+        let o = {}
+        for (let k in bdList) {
+            i++
+            let n = bdList[k][name]
+            if (n) o[n] = k
+        }
+        console.log(JSON.stringify(o))
+        console.log(i)
+        return o
+    }
+    let bdObj = bdToObj('zhName')
+
+    let err = 0
+    let a1 = [], a2 = [], ae = []
+    for (const [k, v] of Object.entries(aliObj)) {
+        // console.log(k, v)
+        if (bdList[k]) {
+            // key 一样的情况
+            a1.push({key: k, aliName: v, bdName: bdList[k].zhName})
+        } else if (bdObj[v]) {
+            // 中文名 一样的情况
+            a2.push({bdKey: bdObj[v], aliKey: k, name: v})
+        } else {
+            // 都没有的情况
+            err++
+            ae.push({key: k, name: v})
+        }
+    }
+    // console.log(JSON.stringify(a3))
+    console.log('err:', err)
+
+    let obj = {} // 最终的对应表
+    // key 一致的数据
+    document.write(`<table style="color:green">`)
+    a1.forEach((v, k) => {
+        obj[v.key] = v.key
+        document.write(`<tr><td>${k + 1}</td><td>${v.key}</td><td>${v.key}</td><td>${v.aliName}</td><td>${v.bdName}</td></tr>`)
+    })
+    document.write(`</table>`)
+
+    // name 一致的数据
+    document.write(`<table>`)
+    a2.forEach((v, k) => {
+        obj[v.bdKey] = v.aliKey
+        document.write(`<tr><td>${k + 1}</td><td>${v.bdKey}</td><td>${v.aliKey}</td><td>${v.name}</td></tr>`)
+    })
+    document.write(`</table>`)
+
+    // 都没有的情况
+    document.write(`<table style="color:red">`)
+    ae.forEach((v, k) => {
+        obj[v.key] = v.key
+        document.write(`<tr><td>${k + 1}</td><td>${v.key}</td><td>${v.key}</td><td>${v.name}</td></tr>`)
+    })
+    document.write(`</table>`)
+
+    // document.write(`<hr>`)
+    console.log(JSON.stringify(obj))
+
+    // 支持转换的语言
+    // see https://translate.alibaba.com/translationopenseviceapp/trans/acquire_supportLanguage.do
+    let supportLanguage = {
+        "sourceLanguage": [
+            "en",
+            "zh",
+            "ru",
+            "es",
+            "fr",
+            "ar",
+            "tr",
+            "pt",
+            "th",
+            "id",
+            "it",
+            "vi"
+        ],
+        "targetLanguage": [
+            "en",
+            "zh",
+            "ru",
+            "es",
+            "fr",
+            "ar",
+            "tr",
+            "pt",
+            "th",
+            "id",
+            "it",
+            "vi"
+        ],
+        "languageMap": [
+            {
+                "sourceLuange": "en",
+                "targetLanguages": [
+                    "zh",
+                    "ru",
+                    "es",
+                    "fr",
+                    "ar",
+                    "tr",
+                    "pt",
+                    "th",
+                    "id",
+                    "vi"
+                ]
+            },
+            {
+                "sourceLuange": "zh",
+                "targetLanguages": [
+                    "en"
+                ]
+            },
+            {
+                "sourceLuange": "ru",
+                "targetLanguages": [
+                    "en",
+                    "es",
+                    "tr",
+                    "it",
+                    "fr",
+                    "pt"
+                ]
+            },
+            {
+                "sourceLuange": "es",
+                "targetLanguages": [
+                    "en",
+                    "ru",
+                    "tr",
+                    "it",
+                    "fr",
+                    "pt"
+                ]
+            },
+            {
+                "sourceLuange": "fr",
+                "targetLanguages": [
+                    "en",
+                    "ru",
+                    "tr",
+                    "it",
+                    "es",
+                    "pt"
+                ]
+            },
+            {
+                "sourceLuange": "ar",
+                "targetLanguages": [
+                    "en"
+                ]
+            },
+            {
+                "sourceLuange": "tr",
+                "targetLanguages": [
+                    "en",
+                    "ru",
+                    "fr",
+                    "it",
+                    "es",
+                    "pt"
+                ]
+            },
+            {
+                "sourceLuange": "pt",
+                "targetLanguages": [
+                    "en",
+                    "ru",
+                    "fr",
+                    "it",
+                    "es",
+                    "tr"
+                ]
+            },
+            {
+                "sourceLuange": "it",
+                "targetLanguages": [
+                    "en",
+                    "ru",
+                    "fr",
+                    "pt",
+                    "es",
+                    "tr"
+                ]
+            },
+            {
+                "sourceLuange": "th",
+                "targetLanguages": [
+                    "en"
+                ]
+            },
+            {
+                "sourceLuange": "id",
+                "targetLanguages": [
+                    "en"
+                ]
+            },
+            {
+                "sourceLuange": "vi",
+                "targetLanguages": [
+                    "en"
+                ]
+            }
+        ]
+    }
+
+    let pairMap = {}
+    let M = supportLanguage.languageMap
+    for (const k in M) {
+        let v = M[k]
+        // console.log(v)
+        pairMap[v.sourceLuange] = v.targetLanguages
+    }
+    console.log(JSON.stringify(pairMap))
+</script>
+</body>
+</html>

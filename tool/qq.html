@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        table {
+            box-sizing: border-box;
+            border-color: grey;
+            font-size: 14px;
+        }
+
+        table tr td {
+            min-width: 120px;
+        }
+    </style>
+</head>
+<body>
+<script src="bd.js"></script>
+<script>
+    // qq language
+    let qqList = {
+        auto: "自动识别",
+        zh: "中文",
+        en: "英语",
+        jp: "日语",
+        kr: "韩语",
+        fr: "法语",
+        es: "西班牙语",
+        it: "意大利语",
+        de: "德语",
+        tr: "土耳其语",
+        ru: "俄语",
+        pt: "葡萄牙语",
+        vi: "越南语",
+        id: "印尼语",
+        th: "泰语",
+        ms: "马来西亚语",
+        ar: "阿拉伯语",
+        hi: "印地语"
+    }
+    // console.log(qqList)
+
+    // baidu language list
+    let bdToObj = function (name) {
+        let i = 0
+        let o = {}
+        for (let k in bdList) {
+            i++
+            let n = bdList[k][name]
+            if (n) o[n] = k
+        }
+        console.log(JSON.stringify(o))
+        console.log(i)
+        return o
+    }
+    let bdObj = bdToObj('zhName')
+
+    let err = 0
+    let a1 = [], a2 = [], ae = []
+    for (let k in qqList) {
+        let v = qqList[k]
+        if (bdList[k]) {
+            // key 一样的情况
+            a1.push({key: k, qqName: v, bdName: bdList[k].zhName})
+        } else if (bdObj[v]) {
+            // 中文名 一样的情况
+            a2.push({bdKey: bdObj[v], qqKey: k, name: v})
+        } else {
+            // 都没有的情况
+            err++
+            ae.push({key: k, name: v})
+        }
+    }
+    // console.log(JSON.stringify(a3))
+    console.log('err:', err)
+
+    let obj = {} // 最终的对应表
+    // key 一致的数据
+    document.write(`<table style="color:green">`)
+    a1.forEach((v, k) => {
+        obj[v.key] = v.key
+        document.write(`<tr><td>${k + 1}</td><td>${v.key}</td><td>${v.key}</td><td>${v.qqName}</td><td>${v.bdName}</td></tr>`)
+    })
+    document.write(`</table>`)
+
+    // name 一致的数据
+    document.write(`<table>`)
+    a2.forEach((v, k) => {
+        obj[v.bdKey] = v.qqKey
+        document.write(`<tr><td>${k + 1}</td><td>${v.bdKey}</td><td>${v.qqKey}</td><td>${v.name}</td></tr>`)
+    })
+    document.write(`</table>`)
+
+    // 都没有的情况
+    document.write(`<table style="color:red">`)
+    ae.forEach((v, k) => {
+        obj[v.key] = v.key
+        document.write(`<tr><td>${k + 1}</td><td>${v.key}</td><td>${v.key}</td><td>${v.name}</td></tr>`)
+    })
+    document.write(`</table>`)
+
+    // document.write(`<hr>`)
+    console.log(JSON.stringify(obj))
+</script>
+</body>
+</html>
