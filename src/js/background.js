@@ -46,11 +46,6 @@ async function initBackground() {
     // 最大保存历史记录数
     if (storageLocalGet('historyMax')) historyMax = Number(storageLocalGet('historyMax'))
 
-    // baiduTranslate().trans('hello world', 'en', 'zh').then(result => {
-    //     debug('百度翻译结果:', result)
-    // }).catch(err => {
-    //     debug('百度翻译错误:', err)
-    // })
     // 添加菜单
     // setting.searchMenus.forEach(name => {
     //     let url = searchList[name]
@@ -147,26 +142,50 @@ const handlers = {
     baidu: function(text, srcLan, tarLan) {
         return baiduTranslate().trans(text, srcLan, tarLan)
     },
+    baidu_link: function(text, srcLan, tarLan) {
+        return baiduTranslate().link(text, srcLan, tarLan)
+    },
     google: function(text, srcLan, tarLan) {
         return googleTranslate().trans(text, srcLan, tarLan)
+    },
+    google_link: function(text, srcLan, tarLan) {
+        return googleTranslate().link(text, srcLan, tarLan)
     },
     bing: function(text, srcLan, tarLan) {
         return bingTranslate().trans(text, srcLan, tarLan)
     },
+    bing_link: function(text, srcLan, tarLan) {
+        return bingTranslate().link(text, srcLan, tarLan)
+    },
     deepl: function(text, srcLan, tarLan) {
         return deeplTranslate().trans(text, srcLan, tarLan)
+    },
+    deepl_link: function(text, srcLan, tarLan) {
+        return deeplTranslate().link(text, srcLan, tarLan)
     },
     alibaba: function(text, srcLan, tarLan) {
         return alibabaTranslate().trans(text, srcLan, tarLan)
     },
+    alibaba_link: function(text, srcLan, tarLan) {
+        return alibabaTranslate().link(text, srcLan, tarLan)
+    },
     youdao: function(text, srcLan, tarLan) {
         return youdaoTranslate().trans(text, srcLan, tarLan)
+    },
+    youdao_link: function(text, srcLan, tarLan) {
+        return youdaoTranslate().link(text, srcLan, tarLan)
     },
     sogou: function(text, srcLan, tarLan) {
         return sogouTranslate().trans(text, srcLan, tarLan)
     },
+    sogou_link: function(text, srcLan, tarLan) {
+        return sogouTranslate().link(text, srcLan, tarLan)
+    },
     so: function(text, srcLan, tarLan) {
         return soTranslate().trans(text, srcLan, tarLan)
+    },
+    so_link: function(text, srcLan, tarLan) {
+        return soTranslate().link(text, srcLan, tarLan)
     }
 }
 
@@ -174,45 +193,49 @@ async function runTranslate(tabId, m) {
     let {action, text, srcLan, tarLan} = m
     if (srcLan === 'auto') {
         srcLan = await autoLang(text)
-        if (srcLan === tarLan) tarLan = srcLan === 'zh' ? 'en' : 'zh'
+        if (srcLan === tarLan) tarLan = srcLan === 'zh' ? 'uk' : 'zh'
     } else if (setting.autoLanguage) {
         if (/\p{Script=Han}/u.test(text)) srcLan = 'zh'
-        if (srcLan === tarLan) tarLan = srcLan === 'zh' ? 'en' : 'zh'
+        if (srcLan === tarLan) tarLan = srcLan === 'zh' ? 'uk' : 'zh'
     }
     debug('翻译参数:', {action, text, srcLan, tarLan})
-    let Sync_setting = await storageSyncGet(['setting']);
+    const Sync_setting = await storageSyncGet(['setting']);
     // debug('Sync_setting:', Sync_setting);
     translateLoadList = Sync_setting.setting.translateList;
     translateLoadList.forEach(name => {
         if (name && handlers[name]) {
             handlers[name](text, srcLan, tarLan).then(result => {
                 debug(`${name} runTranslate结果:`, result)
-                // resolve({action, name, result})
                 sandFgMessage(tabId, {action, name, result})
             }).catch(error => {
                 debug(`${name} runTranslate错误:`, error)
                 sandFgMessage(tabId, {action, name, text, error})
             })
-            // 链接
-            // const link = sd.link(text, srcLan, tarLan)
-            // sandFgMessage(tabId, {action: 'link', type: action, name, link})
         }
-        // sdkInit(`${name}Translate`).then(sd => {
-        //     sd.query(text, srcLan, tarLan).then(result => {
-        //         debug(`${name}:`, result)
-        //         sandFgMessage(tabId, {action, name, result})
-        //     }).catch(error => {
-        //         sandFgMessage(tabId, {action, name, text, error})
-        //     })
-
-        //     // 链接
-        //     let link = sd.link(text, srcLan, tarLan)
+        // const funlink = name + '_link';
+        // if (handlers[funlink]) {
+        //     const link = handlers[funlink](text, srcLan, tarLan)
+        //     debug(`${name} link:`, link)
         //     sandFgMessage(tabId, {action: 'link', type: action, name, link})
-        // })
+        // }
     })
 
     // 自动朗读
     // autoPlayTTS(tabId, text, srcLan).then(_ => null)
+}
+
+function runTranslateTTS(tabId, m) {
+    let list = conf.translateList
+    let tList = conf.translateTTSList
+    let {name, type, text, lang} = m
+    let message = {action: 'playSound', nav: 'translate', name, type, status: 'end'}
+    playTTS(name === setting.localSoundReplace ? 'local' : name, text, lang).then(() => {
+        sandFgMessage(tabId, message)
+    }).catch(err => {
+        debug(`${name} sound error:`, err)
+        let errMsg = `${tList[name] ? tList[name] : list[name] + '朗读'}出错`
+        sandFgMessage(tabId, Object.assign({}, message, {error: errMsg}))
+    })
 }
 
 // 检测返回结果是否正确，如果不正确，则重试
@@ -237,7 +260,7 @@ initBackground()
 // 监听消息
 B.onMessage.addListener(function (m, sender, sendResponse) {
     debug('后台收到消息:', m)
-    debug('发送者:', sender)
+    // debug('发送者:', sender)
     // return true;
     let tabId = sender.tab ? sender.tab.id : null
     if (!tabId) tabId = 'popup'

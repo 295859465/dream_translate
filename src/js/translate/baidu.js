@@ -8,7 +8,6 @@
 
 function baiduTranslate() {
     return {
-
         headers : {
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
             'Acs-Token': '1714737656375_1714783878841_/y/Ru+9939osULPg7ZHtXgeybeDfBA1YUb0yselPJLEDOjBjKTFBqZ0YmhCkMx2l31Jv3Y+ujLFT/aGyb4zMwOtXUcEdhAniGeRsh44zWqAM4FKkU3OpoQaplOgyWDB4qwK0J3diwwROGu5jh4LS6a+i8DnfGS4OI5Df4lNkEQXtV+5zh3sOXAYteVwTud7mzl6nxn/3Q9gkgaTwcqJw8VK7lTkclzIJf9XjabJboKDVpqdc4lINrrQRWxMExBA8FD8sp4uvdsiOmFUawYQWTvM3hOwQOVMaVaZwoSyKd7Clky5F2DxtdeISXBHumJVvqNDmbTGeZEPptP19ipK35UJ2nHzvNZJ9JI7fQWbTmLxYBrhYwX+J1azQIQIbEtY8oTZJpOWfhh0aih5UDp+gzYkNcXt9GD33fzybKa7xUW6lgD9h3kEAxVLp2H9eTYUVI30vbFCBI7vwh8zRvdOY+SvfJ2nNva1CSNRP19Qzteon/2Fbg9nBHPFc4tit74mt',
@@ -315,7 +314,9 @@ function baiduTranslate() {
             })
         },
         link(q, srcLan, tarLan) {
-            return `https://fanyi.baidu.com/#${srcLan}/${tarLan}/${encodeURIComponent(q)}`
+            // https://fanyi.baidu.com/gettts?lan=uk&text=hello&spd=3
+            // return `https://fanyi.baidu.com/#${srcLan}/${tarLan}/${encodeURIComponent(q)}`
+            return `https://fanyi.baidu.com/gettts?lan=${srcLan}&text=${encodeURIComponent(q)}&spd=3`
         },
     }
 }

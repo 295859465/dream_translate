@@ -665,7 +665,7 @@ function loadingDictionary() {
 function resultTranslate(name, isBilingual) {
     let el = I(`${name}_translate_case`)
     if (!el) return
-    let {srcLan, tarLan, lanTTS, data, extra} = msgList[name] || {}
+    let {srcLan, tarLan, lanTTS, data, text} = msgList[name] || {}
 
     // 显示发音图标
     if (srcLan && tarLan) {
@@ -676,8 +676,14 @@ function resultTranslate(name, isBilingual) {
         let sourceEl = el.querySelector('[data-type=source]')
         let targetEl = el.querySelector('[data-type=target]')
         sourceEl && sourceEl.addEventListener('click', function () {
-            activeRipple(this)
-            sendPlayTTS(name, 'source', srcLan, dQuery.text) // 播放原音
+            // activeRipple(this)
+            if ('speechSynthesis' in window) {
+                const msg = new SpeechSynthesisUtterance(text);
+                window.speechSynthesis.speak(msg);
+            } else {
+                debug("Web Speech API is not supported by this browser.");
+            }
+            // sendPlayTTS(name, 'source', srcLan, dQuery.text) // 播放原音
         })
         targetEl && targetEl.addEventListener('click', function () {
             activeRipple(this)
@@ -698,12 +704,12 @@ function resultTranslate(name, isBilingual) {
             s += `<p>${v.tarText}</p>`
         }
     })
-    if (extra) s += extra // 重点词汇 && 单词含义
+    // if (extra) s += extra // 重点词汇 && 单词含义
     if (!s) s = '网络错误，请稍后再试'
     el.querySelector('.case_content').innerHTML = s
 
     // 绑定点击搜索
-    resultBindEvent(el, 'translate', name)
+    // resultBindEvent(el, 'translate', name)
 }
 
 function resultDictionary(m) {

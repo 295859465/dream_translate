@@ -3,7 +3,6 @@
 /**
  * Dream Translate
  * https://github.com/295859465/dream_translate
-
  * @license MIT License
  */
 
@@ -57,30 +56,44 @@ referer: https://translate.alibaba.com/
 sec-fetch-site: same-origin`
             return {requestHeaders: details.requestHeaders.concat(requestHeadersFormat(s))}
         },
-        trans(q, srcLan, tarLan) {
+        async trans(q, srcLan, tarLan) {
             srcLan = this.langMap[srcLan] || 'auto'
             tarLan = this.langMap[tarLan] || 'zh'
             if (!inArray(tarLan, this.pairMap[srcLan])) tarLan = this.pairMap[srcLan][0]
-            return new Promise((resolve, reject) => {
-                if (q.length > 5000) return reject('The text is too large!')
-                this.addListenerRequest()
-                let url = `https://translate.alibaba.com/translationopenseviceapp/trans/TranslateTextAddAlignment.do`
-                let p = new URLSearchParams(`srcLanguage=${srcLan}&tgtLanguage=${tarLan}&srcText=${q}&viewType=&source=&bizType=message`)
-                httpPost({url: url, body: p.toString()}).then(r => {
-                    this.removeListenerRequest()
-                    if (r) {
-                        resolve(this.unify(r, q, srcLan, tarLan))
-                    } else {
-                        reject('alibaba trans error!')
-                    }
-                }).catch(e => {
-                    this.removeListenerRequest()
-                    reject(e)
-                })
+            
+            if (q.length > 5000) return reject('The text is too large!')
+            let url = `https://translate.alibaba.com/api/translate/text`
+            let p = new URLSearchParams(`srcLanguage=${srcLan}&tgtLanguage=${tarLan}&srcText=${q}&viewType=&source=&bizType=message`)
+            const token_request = await fetch('https://translate.alibaba.com/api/translate/csrftoken', {
+                headers: {
+                    'Accept': 'application/json, text/plain, */*'
+                }
             })
+            const token = await token_request.json()
+            // debug('阿里token：', token);
+            const formData = new FormData();
+            formData.append('srcLang', 'auto');
+            formData.append('tgtLang', 'zh');
+            formData.append('domain', 'general');
+            formData.append('query', q);
+            formData.append('_csrf', token.token);
+            const request = await fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json, text/plain, */*'
+                }
+            })
+            const r = await request.json()
+            // debug('阿里翻译结果:', r);
+            if (r.success === true) {
+                return this.unify(r, q, srcLan, tarLan)
+            }else {
+                debug('阿里翻译错误!');
+                return
+            }
         },
         unify(r, q, srcLan, tarLan) {
-            // console.log('alibaba:', r, q, srcLan, tarLan)
             if (srcLan === 'auto' && r.recognizeLanguage) srcLan = r.recognizeLanguage
             let map = this.langMapInvert
             srcLan = map[srcLan] || 'auto'
@@ -88,13 +101,8 @@ sec-fetch-site: same-origin`
             let ret = {text: q, srcLan: srcLan, tarLan: tarLan, lanTTS: null, data: []}
             let srcArr = q.split('\n')
             let tarArr = []
-            let arr = r && r.listTargetText
-            arr && arr.forEach(v => {
-                tarArr = Object.assign(tarArr, v.split('\n'))
-            })
-            tarArr.forEach((v, k) => {
-                ret.data.push({srcText: srcArr[k] || '', tarText: v})
-            })
+            let arr = r && r.data
+            ret.data.push({srcText: q, tarText: arr.translateText})
             return ret
         },
         async query(q, srcLan, tarLan) {
