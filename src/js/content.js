@@ -12,7 +12,6 @@ let dialog, shadow,
     setting, conf, dialogConf,
     languageList, dialogCSS = '', dictionaryCSS = {},
     iconBut, iconText,
-    msgList = {},
     root = B.root
 let dQuery = {action: '', text: '', source: '', target: ''}
 let textTmp = ''
@@ -57,8 +56,7 @@ B.onMessage.addListener(function (m, sender, sendResponse) {
     debug('前端监听到后端的返回:', m)
     // debug('sender:', sender)
     if (m.action === 'translate') {
-        msgList[m.name] = m.result
-        resultTranslate(m.name)
+        resultTranslate(m)
     } else if (m.action === 'dictionary') {
         resultDictionary(m)
     } else if (m.action === 'playSound') {
@@ -662,10 +660,10 @@ function loadingDictionary() {
     el.innerHTML = s
 }
 
-function resultTranslate(name, isBilingual) {
-    let el = I(`${name}_translate_case`)
+function resultTranslate(m, isBilingual) {
+    let el = I(`${m.name}_translate_case`)
     if (!el) return
-    let {srcLan, tarLan, lanTTS, data, text} = msgList[name] || {}
+    let {srcLan, tarLan, lanTTS, data, text} = m.result || {}
 
     // 显示发音图标
     if (srcLan && tarLan) {
@@ -676,9 +674,12 @@ function resultTranslate(name, isBilingual) {
         let sourceEl = el.querySelector('[data-type=source]')
         let targetEl = el.querySelector('[data-type=target]')
         sourceEl && sourceEl.addEventListener('click', function () {
-            // activeRipple(this)
+            activeRipple(this)
             if ('speechSynthesis' in window) {
                 const msg = new SpeechSynthesisUtterance(text);
+                msg.onend = function (e) {
+                    rmClassD(A('.dmx_ripple'), 'active')
+                }
                 window.speechSynthesis.speak(msg);
             } else {
                 debug("Web Speech API is not supported by this browser.");
@@ -707,7 +708,6 @@ function resultTranslate(name, isBilingual) {
     // if (extra) s += extra // 重点词汇 && 单词含义
     if (!s) s = '网络错误，请稍后再试'
     el.querySelector('.case_content').innerHTML = s
-
     // 绑定点击搜索
     // resultBindEvent(el, 'translate', name)
 }
@@ -787,6 +787,8 @@ function resultLink(m) {
         sEl.setAttribute('href', m.link)
         sEl.setAttribute('target', '_blank')
         sEl.setAttribute('referrerPolicy', 'no-referrer')
+    }else {
+        debug(`.case_link 没有找到`)
     }
 }
 

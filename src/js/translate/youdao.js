@@ -120,18 +120,18 @@ function youdaoTranslate() {
             })
             .then(response => response.text())
             .then(text => new fxparser.XMLParser().parse(text));
-            // .then(text => new DOMParser().parseFromString(text, "text/xml"));
         },
         async trans(q, srcLan, tarLan) {
             srcLan = this.langMap[srcLan] || 'AUTO'
             tarLan = this.langMap[tarLan] || 'zh-CHS'
             if (srcLan !== 'zh-CHS') tarLan = 'zh-CHS' // 有道只支持单一中文互换翻译
+            // debug('youdao:', q, srcLan, tarLan)
             if (q.length > 5000){
                 debug('The text is too large!')
                 return;
             }
             let url = 'https://dict.youdao.com/fsearch'
-            let json =await this.fetchXML(url, Object.assign({
+            let json = await this.fetchXML(url, Object.assign({
                     q: q,
                     le: "eng"
                 }, this.DEFAULT_PARAMS))
@@ -139,15 +139,16 @@ function youdaoTranslate() {
             if(json){
                 return this.unify(json.yodaodict['custom-translation'], q, srcLan, tarLan)
             }else {
-                reject('youdao translate error!')
+                // reject('youdao translate error!')
+                let ret = {text: q, srcLan: srcLan, tarLan: tarLan, lanTTS: this.lanTTS, data: []}
+                return ret
             }
         },
         unify(r, q, srcLan, tarLan) {
-            // console.log('youdao:', r, q, srcLan, tarLan)
-            let lanArr = r.type.split('2')
-            if (lanArr.length > 1) srcLan = lanArr[0]
-            let map = this.langMapInvert
-            srcLan = map[srcLan] || 'auto'
+            // let lanArr = r.type.split('2')
+            // if (lanArr.length > 1) srcLan = lanArr[0]
+            let map = invertObject(this.langMap)
+            // srcLan = map[srcLan] || 'auto'
             tarLan = map[tarLan] || ''
             let ret = {text: q, srcLan: srcLan, tarLan: tarLan, lanTTS: this.lanTTS, data: []}
             let arr = r && r.translation
@@ -190,7 +191,7 @@ function youdaoTranslate() {
             })
         },
         link(q, srcLan, tarLan) {
-            return `https://fanyi.youdao.com/?d_sl=${srcLan}&d_tl=${tarLan}&d_text=${encodeURI(q)}`
+            return `https://fanyi.youdao.com/#/TextTranslate`
         },
     }
 }

@@ -129,7 +129,7 @@ function googleTranslate() {
         unify(r, q, srcLan, tarLan) {
             // 翻译的语言参数
             if (srcLan === 'auto' && r.sourceLanguage) srcLan = r.sourceLanguage; // 源语言
-            let map = this.langMapInvert
+            let map = invertObject(this.langMap)
             srcLan = map[srcLan] || 'auto'
             tarLan = map[tarLan] || ''
 

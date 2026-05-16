@@ -19,7 +19,6 @@ let isFirefox = navigator.userAgent.includes("Firefox")
 // window.isFirefox = typeof browser !== "undefined" && Object.getPrototypeOf(browser) === Object.prototype
 const B = {
     extension: chrome.extension,
-    // getBackgroundPage: chrome.extension.getBackgroundPage(),
     windows: chrome.windows,
     commands: chrome.commands,
     runtime: chrome.runtime,
@@ -40,6 +39,13 @@ String.prototype.format = function () {
     return this.replace(/{(\d+)}/g, function (match, number) {
         return typeof args[number] != 'undefined' ? args[number] : match
     })
+}
+
+function invertObject(obj) {
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    acc[value] = key;
+    return acc;
+  }, {});
 }
 
 function storageLocalGet(options) {
@@ -566,77 +572,6 @@ function HTMLEncode(s) {
 
 function uniqueArray(arr) {
     return [...new Set(arr)]
-}
-
-function httpGet(url, type, headers, notStrict) {
-    return new Promise((resolve, reject) => {
-        let c = new XMLHttpRequest()
-        c.responseType = type || 'text'
-        c.timeout = 20000
-        c.onload = function (e) {
-            if (notStrict) {
-                resolve(this.response)
-            } else {
-                if (this.status === 200) {
-                    resolve(this.response)
-                } else {
-                    reject(e)
-                }
-            }
-        }
-        c.ontimeout = function (e) {
-            reject(e)
-        }
-        c.onerror = function (e) {
-            reject(e)
-        }
-        c.open("GET", url)
-        headers && headers.forEach(v => {
-            c.setRequestHeader(v.name, v.value)
-        })
-        c.send()
-    })
-}
-
-function httpPost(options) {
-    let o = Object.assign({
-        url: '',
-        responseType: 'json',
-        type: 'form',
-        body: null,
-        timeout: 30000,
-        headers: [],
-    }, options)
-    return new Promise((resolve, reject) => {
-        let c = new XMLHttpRequest()
-        c.responseType = o.responseType
-        c.timeout = o.timeout
-        c.onload = function (e) {
-            if (this.status === 200 && this.response !== null) {
-                resolve(this.response)
-            } else {
-                reject(e)
-            }
-        }
-        c.ontimeout = function (e) {
-            reject(e)
-        }
-        c.onerror = function (e) {
-            reject(e)
-        }
-        c.open("POST", o.url)
-        if (o.type === 'form') {
-            c.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-        } else if (o.type === 'json') {
-            c.setRequestHeader("Content-Type", "application/json; charset=UTF-8")
-        } else if (o.type === 'xml') {
-            c.setRequestHeader("Content-Type", "application/ssml+xml")
-        }
-        o.headers.length > 0 && o.headers.forEach(v => {
-            c.setRequestHeader(v.name, v.value)
-        })
-        c.send(o.body)
-    })
 }
 
 // 时间范围内，只执行最后一次回调函数

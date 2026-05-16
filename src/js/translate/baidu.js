@@ -96,7 +96,7 @@ function baiduTranslate() {
                 debug('The text is too large!')
                 return
             }
-            let json_data = {
+            const json_data = {
                 'query': q,
                 'from': srcLan,
                 'to': tarLan,
@@ -115,22 +115,19 @@ function baiduTranslate() {
             });
             const r = await response.text();
             if (r) {
-                let arr = r.split('event: message')
-                let index = this.get_specific_str('翻译中', arr)
+                const arr = r.split('event: message')
+                const index = this.get_specific_str('翻译中', arr)
                 if (index !== -1) {
                     let str = arr[index]
                     if (str) {
                         str = str.substring(7)
-                        // console.log(str);
-                        // return;
                         let fanyi_arr = JSON.parse(str)
                         // return fanyi_arr.data.list[0].dst
                         return this.unify(fanyi_arr.data.list[0].dst, q, srcLan, tarLan)
                     }
                 }
-                // resolve(this.unify(r, q, srcLan, tarLan))
             } else {
-                console.log('百度翻译访问失败!')
+                debug('百度翻译访问失败!')
                 return
             }
         
@@ -141,135 +138,6 @@ function baiduTranslate() {
                 ret.data.push({srcText: text, tarText: r})
             }
             return ret
-        },
-        unify1(r, text, srcLan, tarLan) {
-            // console.log('baidu:', r, text, srcLan, tarLan)
-            // console.log(JSON.stringify(r))
-            let res = getJSONValue(r, 'trans_result', {})
-            let data = []
-            if (res.data) {
-                res.data.forEach(v => {
-                    if (v.src && v.dst) data.push({srcText: v.src, tarText: v.dst})
-                })
-            }
-            if (setting.translateThin) return {text, srcLan, tarLan, lanTTS: this.lanTTS, data} // 精简显示
-
-            // 重点词汇
-            let s = ''
-            if (res.keywords && res.keywords.length > 0) {
-                s += `<div class="case_dd"><div class="case_dd_head">重点词汇</div>`
-                s += `<div class="case_dd_parts">`
-                res.keywords.forEach(v => {
-                    if (v.word && v.means) s += `<p><b data-search="true">${v.word}</b>${v.means.join('；')}</p>`
-                })
-                s += `</div></div>`
-            }
-
-            // 百度支持牛津，格林斯，英英等，如果全显示，会很复杂，小框显示也会很乱，所以只显示最简单的部分即可。
-            // 在翻译领域，除了国际巨头谷歌，在国内做的最好的非百度莫属，然后是搜狗，有道；如今搜狗被腾讯收购，或许未来会改名。-- 2021.1.6
-            let simple_means = getJSONValue(r, 'dict_result.simple_means')
-            if (simple_means) {
-                s += `<div class="case_dd">`
-                let {word_name, symbols, word_means, exchange, memory_skill, tags} = simple_means
-                if (word_name) s += `<div class="case_dd_head">${word_name}</div>`  // 查询的单词
-
-                let getIconHTML = function (type, text, title) {
-                    let lan = type === 'uk' ? 'uk' : 'en'
-                    let src = `https://fanyi.baidu.com/gettts?lan=${lan}&text=${encodeURIComponent(text)}&spd=3&source=web`
-                    return `<i class="dmx-icon dmx_ripple" data-type="${type}" data-src-mp3="${src}" title="${title}"></i>`
-                }
-                let hasParts = false
-                if (symbols) {
-                    symbols.forEach(sym => {
-                        // 音标
-                        let {ph_en, ph_am, parts} = sym
-                        if (ph_en || ph_am) {
-                            s += `<div class="case_dd_ph">`
-                            s += `[${ph_en}${ph_am && ph_en !== ph_am ? ' $ ' + ph_am : ''}]`
-                            s += getIconHTML('uk', text, '英音')
-                            s += getIconHTML('us', text, '美音')
-                            s += `</div>`
-                        }
-
-                        // 释义
-                        if (parts && parts.length > 0) {
-                            hasParts = true
-                            s += `<div class="case_dd_parts">`
-                            parts.forEach(v => {
-                                let {part, means} = v
-                                let firstVal = getJSONValue(means, '0')
-                                if (firstVal && isString(firstVal)) {
-                                    s += `<p>${part ? `<b>${part}</b>` : ''}${means.join('；')}</p>`
-                                } else {
-                                    let firstVal = getJSONValue(means, '0.text')
-                                    if (firstVal && isString(firstVal)) {
-                                        for (let mv of means) {
-                                            let {text, part, means} = mv
-                                            s += `<p>${part ? `<b>${part}</b>` : ''}${text} ${means ? means.join('；') : ''}</p>`
-                                        }
-                                    }
-                                }
-                            })
-                            s += `</div>`
-                        }
-                    })
-                }
-                if (!hasParts && word_means) s += `<div class="case_dd_parts"><p>${word_means.join('；')}</p></div>`
-
-                // 单词形态
-                if (exchange) {
-                    let exchangeObj = {
-                        word_third: '第三人称单数',
-                        word_pl: '复数',
-                        word_ing: '现在分词',
-                        word_past: '过去式',
-                        word_done: '过去分词',
-                        word_er: '比较级',
-                        word_est: '最高级',
-                        word_proto: '原型',
-                    }
-                    s += `<div class="case_dd_exchange">`
-                    for (let [k, v] of Object.entries(exchange)) {
-                        if (!v) continue
-                        let wordStr = ''
-                        v.forEach(word => {
-                            if (word) wordStr += `<a data-search="true">${word}</a>`
-                        })
-                        s += `<b>${exchangeObj[k] || '其他'}</b><u>${wordStr}</u>`
-                    }
-                    s += `</div>`
-                }
-
-                // 记忆技巧
-                if (memory_skill) {
-                    s += `<div class="case_dd_parts"><b>记忆技巧：</b>${memory_skill}</div>`
-                }
-
-                // 单词标签
-                if (tags) {
-                    s += `<div class="case_dd_tags">`
-                    for (let [k, v] of Object.entries(tags)) {
-                        let tagStr = ''
-                        v.forEach(tag => {
-                            if (tag) tagStr += `<u>${tag}</u>`
-                        })
-                        s += tagStr
-                    }
-                    s += `</div>`
-                }
-
-                s += `</div>`
-            }
-
-            // 视频显示，如果有的话。
-            let videoObj = getJSONValue(r, 'dict_result.queryExplainVideo')
-            if (videoObj && videoObj.thumbUrl && videoObj.videoUrl) {
-                // s += `<div style="margin:10px auto;width:400px;height:224px;background:#000"><video width="400" height="224" src="${videoObj.videoUrl}" poster="${videoObj.thumbUrl}" controls="controls" rel="noreferrer"></video></div>`
-                let src = B.root + 'html/video.html?' + new URLSearchParams(`thumbUrl=${videoObj.thumbUrl}&videoUrl=${videoObj.videoUrl}`)
-                s += `<div style="margin:10px auto;width:400px;height:224px;background:#000"><iframe width="400" height="224" src="${src}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`
-            }
-
-            return {text, srcLan, tarLan, lanTTS: this.lanTTS, data, extra: s}
         },
         async query(q, srcLan, tarLan, noCache) {
             if (srcLan === 'auto') {
@@ -314,9 +182,7 @@ function baiduTranslate() {
             })
         },
         link(q, srcLan, tarLan) {
-            // https://fanyi.baidu.com/gettts?lan=uk&text=hello&spd=3
-            // return `https://fanyi.baidu.com/#${srcLan}/${tarLan}/${encodeURIComponent(q)}`
-            return `https://fanyi.baidu.com/gettts?lan=${srcLan}&text=${encodeURIComponent(q)}&spd=3`
+            return `https://fanyi.baidu.com/mtpe-individual/transText#/${srcLan}/${tarLan}/${encodeURIComponent(q)}`
         },
     }
 }

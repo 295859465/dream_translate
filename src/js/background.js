@@ -10,7 +10,7 @@
 
 importScripts('common.js', 'lib/fxparser.min.js', 'translate/alibaba.js', 'translate/baidu.js', 'translate/bing.js', 'translate/deepl.js', 'translate/frdic.js', 'translate/google.js', 'translate/so.js', 'translate/sogou.js', 'translate/youdao.js', );
 
-let conf, setting, sdk = {}
+var conf, setting, sdk = {}
 let searchText, searchList
 let ocrToken = '', ocrExpires = 0
 let translateLoadList = []
@@ -139,54 +139,14 @@ function sdkInit(name) {
 }
 
 const handlers = {
-    baidu: function(text, srcLan, tarLan) {
-        return baiduTranslate().trans(text, srcLan, tarLan)
-    },
-    baidu_link: function(text, srcLan, tarLan) {
-        return baiduTranslate().link(text, srcLan, tarLan)
-    },
-    google: function(text, srcLan, tarLan) {
-        return googleTranslate().trans(text, srcLan, tarLan)
-    },
-    google_link: function(text, srcLan, tarLan) {
-        return googleTranslate().link(text, srcLan, tarLan)
-    },
-    bing: function(text, srcLan, tarLan) {
-        return bingTranslate().trans(text, srcLan, tarLan)
-    },
-    bing_link: function(text, srcLan, tarLan) {
-        return bingTranslate().link(text, srcLan, tarLan)
-    },
-    deepl: function(text, srcLan, tarLan) {
-        return deeplTranslate().trans(text, srcLan, tarLan)
-    },
-    deepl_link: function(text, srcLan, tarLan) {
-        return deeplTranslate().link(text, srcLan, tarLan)
-    },
-    alibaba: function(text, srcLan, tarLan) {
-        return alibabaTranslate().trans(text, srcLan, tarLan)
-    },
-    alibaba_link: function(text, srcLan, tarLan) {
-        return alibabaTranslate().link(text, srcLan, tarLan)
-    },
-    youdao: function(text, srcLan, tarLan) {
-        return youdaoTranslate().trans(text, srcLan, tarLan)
-    },
-    youdao_link: function(text, srcLan, tarLan) {
-        return youdaoTranslate().link(text, srcLan, tarLan)
-    },
-    sogou: function(text, srcLan, tarLan) {
-        return sogouTranslate().trans(text, srcLan, tarLan)
-    },
-    sogou_link: function(text, srcLan, tarLan) {
-        return sogouTranslate().link(text, srcLan, tarLan)
-    },
-    so: function(text, srcLan, tarLan) {
-        return soTranslate().trans(text, srcLan, tarLan)
-    },
-    so_link: function(text, srcLan, tarLan) {
-        return soTranslate().link(text, srcLan, tarLan)
-    }
+    baidu: baiduTranslate(),
+    google: googleTranslate(),
+    bing: bingTranslate(),
+    deepl: deeplTranslate(),
+    alibaba: alibabaTranslate(),
+    youdao: youdaoTranslate(),
+    sogou: sogouTranslate(),
+    so: soTranslate()
 }
 
 async function runTranslate(tabId, m) {
@@ -204,20 +164,17 @@ async function runTranslate(tabId, m) {
     translateLoadList = Sync_setting.setting.translateList;
     translateLoadList.forEach(name => {
         if (name && handlers[name]) {
-            handlers[name](text, srcLan, tarLan).then(result => {
+            handlers[name].trans(text, srcLan, tarLan).then(result => {
                 debug(`${name} runTranslate结果:`, result)
                 sandFgMessage(tabId, {action, name, result})
             }).catch(error => {
                 debug(`${name} runTranslate错误:`, error)
                 sandFgMessage(tabId, {action, name, text, error})
             })
+            const link = handlers[name].link(text, srcLan, tarLan)
+            // debug(`${name} link:`, link)
+            sandFgMessage(tabId, {action: 'link', type: action, name, link})
         }
-        // const funlink = name + '_link';
-        // if (handlers[funlink]) {
-        //     const link = handlers[funlink](text, srcLan, tarLan)
-        //     debug(`${name} link:`, link)
-        //     sandFgMessage(tabId, {action: 'link', type: action, name, link})
-        // }
     })
 
     // 自动朗读
