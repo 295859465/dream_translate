@@ -9,21 +9,21 @@
 function baiduTranslate() {
     return {
         headers : {
+            'Accept': 'text/event-stream',
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
-            'Acs-Token': '1714737656375_1714783878841_/y/Ru+9939osULPg7ZHtXgeybeDfBA1YUb0yselPJLEDOjBjKTFBqZ0YmhCkMx2l31Jv3Y+ujLFT/aGyb4zMwOtXUcEdhAniGeRsh44zWqAM4FKkU3OpoQaplOgyWDB4qwK0J3diwwROGu5jh4LS6a+i8DnfGS4OI5Df4lNkEQXtV+5zh3sOXAYteVwTud7mzl6nxn/3Q9gkgaTwcqJw8VK7lTkclzIJf9XjabJboKDVpqdc4lINrrQRWxMExBA8FD8sp4uvdsiOmFUawYQWTvM3hOwQOVMaVaZwoSyKd7Clky5F2DxtdeISXBHumJVvqNDmbTGeZEPptP19ipK35UJ2nHzvNZJ9JI7fQWbTmLxYBrhYwX+J1azQIQIbEtY8oTZJpOWfhh0aih5UDp+gzYkNcXt9GD33fzybKa7xUW6lgD9h3kEAxVLp2H9eTYUVI30vbFCBI7vwh8zRvdOY+SvfJ2nNva1CSNRP19Qzteon/2Fbg9nBHPFc4tit74mt',
+            'Acs-Token': 'P1_1791100805554_1791182189669_oOZAWtD6ZiP8cKqTt2X+q8XseZ4A+AtD61Elf2c2SD2KitUXERgfOmzJlVt5JvNSrAwF1XESYFtpkOdwwSU/GoiwosNbU4G4NdzaiSV3W6GfbI+GUW9fLkhwY9NBsKlbl03qvVidp7/Jm9MF+OJ6L+7+gg9xRlpPWpXjmExAlULO1jjP52fsTlwgV0i8an3ss6qAVeeBJfaO0xgfRtwKWURO1EtfegIpvPUTixClU1LiELwmjPgNKjKw2hWelYoluCQqLMVbIxN6tyWaf4t2IaP5AWm+wquw5cD/WnNW8gZeBshY6HKh3YkG28Cb70uSBzrNJqtMLynzbDCuQmdeFB1HzzfdlkUrKOxFYj75T3m1bZxAgPNXd1hpi4t0zLxP4AyMvOj0sN+LIuEii/49HvTKxXhjdJ6J5/ItvClJd7m50MfrGZLm7gyiCWisii9WvPykoUOjKLNvnTR2u2mfZ4jPfC8M+zTCtI71zOSnPAaBKe9JgXiZeAXxTqclNlEn',
             'Connection': 'keep-alive',
             'Content-Type': 'application/json',
             'Cookie': '__bid_n=186c934efe06011e1f4207; BIDUPSID=D2D4E300E02C71C493B5CBAADA8151BA; PSTM=1682425668; FPTOKEN=BnSROSs5jhyelsc7AY/mWoFn8FJ+lmKyKNi5hUAzaCYQoPT4UCZY+XdkkN0A3cE5STiNjIt3JViMy2vqbC8Bm1oubcjz9zyTvikjfKvl2p48MxxMWmzxPqPqgoUajs+cJIcasYydz0uHQSDn+hwMPhmz2qB6Ie0UvP9Kyy0vU5pkFTPfLLq4bawr71eu8asc7udLYiOEyI8XatnnSpYUV7xdu4UAnBiJbbkvTien7lpY8K/IodCqO8MCCg+KOFugmN5tVHOpToaKJ3lrCcAVv6fxApPas/VCrnJAdm+9Fan3NnxwKqH37zBI3oliCGU8tlsJQ4cIZyxv+HVS/3hhj/OMUZWIToWeBwX5bfj5g65QRI5haQP7cZ8uQ1BQW35rsLHfhn92DNTKV6UkBOmR1g==|TPmQlnmdI3DJ3b/0ZyWOFDxcpzsV5tklQX4FhuxbLK4=|10|22c12cb00c493e9868202f02d0ab3e3b; BAIDUID=E1EBAF32C1DB7E75C1CF54F025678979:FG=1; BAIDUID_BFESS=E1EBAF32C1DB7E75C1CF54F025678979:FG=1; MBD_AT=0; H_WISE_SIDS=282632_283599_281704_285064_285297_256739_286996_110085_282466_287237_283016_284880_287066_287627_287653_287665_287710_283904_287168_287932_280167_288373_283782_288270_287982_288671_288710_288713_288717_288588_288725_288743_288746_288749_281879_284816_285177_282929_265881_289262_289009_289545_289552_289715_287717_289948_289952_289956_290204_290237_290234_271562_290326_290369_290500_290355_286492_290555_290560_290562_282553_290692_269892_286863_287511_290896_290591_289236_289430_287976_291150_291237_290520_277936; H_WISE_SIDS_BFESS=282632_283599_281704_285064_285297_256739_286996_110085_282466_287237_283016_284880_287066_287627_287653_287665_287710_283904_287168_287932_280167_288373_283782_288270_287982_288671_288710_288713_288717_288588_288725_288743_288746_288749_281879_284816_285177_282929_265881_289262_289009_289545_289552_289715_287717_289948_289952_289956_290204_290237_290234_271562_290326_290369_290500_290355_286492_290555_290560_290562_282553_290692_269892_286863_287511_290896_290591_289236_289430_287976_291150_291237_290520_277936; H_PS_PSSID=40154_40201_40210_40206_40217_40224_40060; MCITY=-353%3A; BAIDU_WISE_UID=wapp_1714282499116_707; ZFY=Xpefmgv2PZiAfrw77aKfqdUHYWy6czIv:A4Ppas78YiA:C; BDUSS=ldFMUtEdzFINUo1bnloOXlqSmw1LVBFS3c1YWRYN0hHQ0lTSTV2OVFnbS1uRlptRVFBQUFBJCQAAAAAAAAAAAEAAACxrZfn9sCfVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL4PL2a-Dy9mY; BDUSS_BFESS=ldFMUtEdzFINUo1bnloOXlqSmw1LVBFS3c1YWRYN0hHQ0lTSTV2OVFnbS1uRlptRVFBQUFBJCQAAAAAAAAAAAEAAACxrZfn9sCfVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL4PL2a-Dy9mY; ab_sr=1.0.1_ZmU3MmRhYzlmYTE4ZDY3Y2VlNDRiZTE2MjcyMGFjYzU2NGEwZWY0NzdmMzUwNzVhNDMyMWU2MTI0Y2FjOGNkZjZkN2YwMGUwZDE0ZWQ1MWQzMDI4OGM1YmZiNjIyMGQ1YTUzYjM4M2JhMDUzYTdkYmUwY2MxZDI3OWJhMTkzNmM5Mzc2NjNhZjIyOTdkMDUzNjg4MmI4NjI2ZjY3ODNlZQ==; RT="z=1&dm=baidu.com&si=5f26d3ba-b628-48a3-86e6-2bdfa76ee6bb&ss=lvre14n5&sl=2&tt=5lz&bcn=https%3A%2F%2Ffclog.baidu.com%2Flog%2Fweirwood%3Ftype%3Dperf&ld=cra"',
             'Origin': 'https://fanyi.baidu.com',
-            'Referer': 'https://fanyi.baidu.com/mtpe-individual/multimodal?query=%EF%BB%BF%E4%BD%A0%E5%A5%BD&lang=zh2en',
+            'Referer': 'https://fanyi.baidu.com/mtpe-individual/transText',
             'Sec-Fetch-Dest': 'empty',
             'Sec-Fetch-Mode': 'cors',
             'Sec-Fetch-Site': 'same-origin',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 Edg/124.0.0.0',
-            'accept': 'text/event-stream',
-            'sec-ch-ua': '"Chromium";v="124", "Microsoft Edge";v="124", "Not-A.Brand";v="99"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Windows"'
+            'Sec-Ch-Ua': '"Chromium";v="154", "Microsoft Edge";v="154", "Not A(Brand";v="99"',
+            'Sec-Ch-Ua-Mobile': '?0',
+            'Sec-Ch-Ua-Platform': '"Windows"'
         },
         get_specific_str(str, arr) {
             let i = 0
@@ -100,11 +100,15 @@ function baiduTranslate() {
                 'query': q,
                 'from': srcLan,
                 'to': tarLan,
-                'reference': '',
                 'corpusIds': [],
-                'qcSettings': ['1','2','3','4','5','6','7','8','9','10','11'],
                 'needPhonetic': false,
                 'domain': 'common',
+                'isAi': false,
+                'isIncognitoAI': false,
+                'needNewlineCombine': false,
+                'detectLang': "",
+                'reference': "",
+                'sseStartTime': new Date().getTime(),
                 'milliTimestamp': new Date().getTime(),
             }
             const response = await fetch('https://fanyi.baidu.com/ait/text/translate', {
@@ -115,17 +119,16 @@ function baiduTranslate() {
             });
             const r = await response.text();
             if (r) {
-                const arr = r.split('event: message')
-                const index = this.get_specific_str('翻译中', arr)
-                if (index !== -1) {
-                    let str = arr[index]
-                    if (str) {
-                        str = str.substring(7)
-                        let fanyi_arr = JSON.parse(str)
-                        // return fanyi_arr.data.list[0].dst
-                        return this.unify(fanyi_arr.data.list[0].dst, q, srcLan, tarLan)
+                const arr = r.split('event: message');
+                let dst = '';
+                arr.forEach(element => {
+                    if (element.includes('"event":"Translating"')) {
+                        let message = element.substring(7);
+                        let fanyi_arr = JSON.parse(message);
+                        dst += fanyi_arr.data.list[0].dst;
                     }
-                }
+                });
+                return this.unify(dst, q, srcLan, tarLan)
             } else {
                 debug('百度翻译访问失败!')
                 return
