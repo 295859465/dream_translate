@@ -99,9 +99,8 @@ function voiceListSort(list) {
 }
 
 function speak(text, options) {
-    // console.log(text, options)
     if (text) {
-        let arr = B.getBackgroundPage().sliceStr(text, 128)
+        let arr = sliceStr(text, 128)
         arr.forEach((v, k) => {
             if (k === 0) {
                 B.tts.speak(v, options)

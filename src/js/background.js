@@ -211,6 +211,51 @@ async function checkRetry(callback, times) {
     return p
 }
 
+function sendAllowSelect() {
+    getActiveTabId().then(tabId => {
+        tabId && sendTabMessage(tabId, {action: 'allowSelect'})
+    })
+}
+
+function openTab(url) {
+    B.tabs.create({url})
+}
+
+function openTransWindow() {
+    let url = B.root + 'html/popup.html?fullscreen=1';
+    B.tabs.create({url});
+}
+
+function openWindow(wid, width, height, url, reopen) {
+    let name = `_window_${wid}`
+    let openFn = function (width, height, left, top) {
+        let o = {type: 'popup', width, height, url}
+
+        // 居中
+        let screen = window.screen
+        o.left = Math.floor(left > 0 ? left : (screen.width - o.width) / 2)
+        o.top = Math.floor(top > 0 ? top : (screen.height - o.height) / 2)
+
+        B.windows.create(o, w => window[name] = w.id)
+    }
+    let id = window[name]
+    if (id) {
+        B.windows.get(id, function (w) {
+            if (!B.runtime.lastError && w.id) {
+                if (reopen) {
+                    B.windows.remove(w.id)
+                    setTimeout(() => openFn(w.width, w.height, w.left, w.top), 100)
+                } else {
+                    B.windows.update(w.id, {focused: true})
+                }
+            } else {
+                openFn(width, height)
+            }
+        })
+    } else {
+        openFn(width, height)
+    }
+}
 
 initBackground()
 

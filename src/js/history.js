@@ -8,7 +8,7 @@
  */
 
 let db
-let bg = B.getBackgroundPage()
+let historyMax = 3000
 document.addEventListener('DOMContentLoaded', async function () {
     await idb('history', 1, initHistory).then(r => db = r)
 
@@ -98,7 +98,7 @@ function openSetting() {
         ddi({
             title: '设置', body: `<div class="dmx_form_item">
             <div class="item_label">最大记录数</div>
-                <div class="item_content number"><input id="history_max" type="number" value="${bg.historyMax}" min="0" class="item_input"></div>
+                <div class="item_content number"><input id="history_max" type="number" value="${historyMax}" min="0" class="item_input"></div>
             </div>
             <div class="dmx_right">
                 <button class="dmx_button" id="save_but">保存</button>
