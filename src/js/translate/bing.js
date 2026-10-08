@@ -217,7 +217,7 @@ function bingTranslate() {
             // 提取翻译文本
             if (translationResult && translationResult[0] && translationResult[0].translations) {
                 const translatedText = translationResult[0].translations[0].text;
-                debug(`翻译: ${translatedText}`);
+                debug(`翻译结果: ${translatedText}`);
                 return this.unify(translatedText, q, srcLan, tarLan)
             }
         },
@@ -225,12 +225,9 @@ function bingTranslate() {
             // console.log('bing:', r, q, srcLan, tarLan)
             if (srcLan === 'auto-detect' && r[0].detectedLanguage) srcLan = r[0].detectedLanguage.language
             let map = this.langMapInvert
-            srcLan = map[srcLan] || 'auto'
-            tarLan = map[tarLan] || ''
+            srcLan = map[srcLan] || 'en'
+            tarLan = map[tarLan] || 'zh'
             let ret = {text: q, srcLan: srcLan, tarLan: tarLan, lanTTS: this.lanTTS, data: []}
-            // let srcArr = q.split('\n')
-            // let tarArr = []
-            // let arr = r && r[0] && r[0].translations
             ret.data.push({srcText: q, tarText: r})
             return ret
         },
